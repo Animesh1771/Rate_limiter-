@@ -1,6 +1,8 @@
 package com.RateLimiter.controller;
 
+import com.RateLimiter.config.RateLimiterProperties;
 import com.RateLimiter.service.RateLimiterService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,8 @@ import java.util.Map;
 public class StatusController {
 
     private final RateLimiterService rateLimiterService;
+    @Autowired
+    private RateLimiterProperties rateLimiterProperties;
 
     public StatusController(RateLimiterService rateLimiterService) {
         this.rateLimiterService = rateLimiterService;
@@ -45,7 +49,7 @@ public class StatusController {
         String clientId = getClientId(exchange);
         return Mono.just(ResponseEntity.ok(Map.of(
                 "clientId", clientId,
-                "capacity", rateLimiterService.getCapacity(clientId),
+                "capacity", rateLimiterProperties.getCapacity(),
                 "availableTokens", rateLimiterService.getAvailableTokens(clientId)
         )));
     }
